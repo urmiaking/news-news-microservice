@@ -28,11 +28,25 @@ namespace NewsManagementMicroService.Controllers
             return await _context.Comments.ToListAsync();
         }
 
-        // GET: api/Comments/GetComments/5
+        // GET: api/Comments/GetCommentById/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Comment>> GetComment(int id)
+        public async Task<ActionResult<Comment>> GetCommentById(int id)
         {
             var comment = await _context.Comments.FindAsync(id);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            return comment;
+        }
+
+        // GET: api/Comments/GetCommentByNewsId/5
+        [HttpGet("{newsId}")]
+        public async Task<ActionResult<IEnumerable<Comment>>> GetCommentByNewsId(int newsId)
+        {
+            var comment = await _context.Comments.Where(a => a.NewsId.Equals(newsId)).ToListAsync();
 
             if (comment == null)
             {
@@ -77,7 +91,16 @@ namespace NewsManagementMicroService.Controllers
         public async Task<ActionResult<Comment>> PostComment(Comment comment)
         {
             _context.Comments.Add(comment);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
 
             return CreatedAtAction("GetComment", new { id = comment.Id }, comment);
         }

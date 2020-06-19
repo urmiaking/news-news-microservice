@@ -28,9 +28,9 @@ namespace NewsManagementMicroService.Controllers
             return await _context.News.ToListAsync();
         }
 
-        // GET: api/News/GetNews/5
+        // GET: api/News/GetNewsById/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<News>> GetNews(int id)
+        public async Task<ActionResult<News>> GetNewsById(int id)
         {
             var news = await _context.News.FindAsync(id);
 
@@ -77,7 +77,16 @@ namespace NewsManagementMicroService.Controllers
         public async Task<ActionResult<News>> PostNews(News news)
         {
             _context.News.Add(news);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 
             return CreatedAtAction("GetNews", new { id = news.Id }, news);
         }

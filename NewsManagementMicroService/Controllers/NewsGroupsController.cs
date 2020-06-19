@@ -30,9 +30,23 @@ namespace NewsManagementMicroService.Controllers
 
         // GET: api/NewsGroups/GetNewsGroups/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<NewsGroup>> GetNewsGroup(int id)
+        public async Task<ActionResult<NewsGroup>> GetNewsGroupById(int id)
         {
             var newsGroup = await _context.NewsGroups.FindAsync(id);
+
+            if (newsGroup == null)
+            {
+                return NotFound();
+            }
+
+            return newsGroup;
+        }
+
+        // GET: api/NewsGroups/GetNewsGroupByName/5
+        [HttpGet("{name}")]
+        public async Task<ActionResult<NewsGroup>> GetNewsGroupByName(string name)
+        {
+            var newsGroup = await _context.NewsGroups.FirstOrDefaultAsync(a => a.GroupTitle.Equals(name));
 
             if (newsGroup == null)
             {
