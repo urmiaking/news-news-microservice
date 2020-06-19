@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using NewsManagementMicroService.Data;
+using Microsoft.OpenApi.Models;
 
 namespace NewsManagementMicroService
 {
@@ -29,6 +30,16 @@ namespace NewsManagementMicroService
 
             services.AddDbContext<NewsManagementMicroServiceContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("NewsManagementMicroServiceContext")));
+
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "News - News management HTTP API",
+                    Version = "v1",
+                    Description = "The News Management Microservice HTTP API. This is a Data-Driven/CRUD microservice"
+                });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -46,6 +57,12 @@ namespace NewsManagementMicroService
             {
                 endpoints.MapControllers();
             });
+
+            app.UseSwagger()
+                .UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Users API V1");
+                });
         }
     }
 }
