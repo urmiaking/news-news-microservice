@@ -18,7 +18,9 @@ namespace NewsManagementMicroService.Logic
                 try
                 {
                     var db = services.GetRequiredService<T>();
+                    Console.WriteLine("Applying Migrations...");
                     db.Database.Migrate();
+                    Console.WriteLine("Migrations Applied Successfully");
                 }
                 catch (Exception ex)
                 {
